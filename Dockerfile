@@ -1,16 +1,15 @@
-# Use an official lightweight Python image
 FROM python:3.9-slim
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file and install dependencies
+# Copy requirements first to leverage Docker caching
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the script into the container
-COPY app.py .
+# Install the dependencies
+RUN pip install --no-cache-dir numpy pandas scikit-learn
 
-# Run the script with the -u flag to ensure output isn't buffered 
-# (Important for interactive terminal prompts in Docker)
+# Copy the rest of your code
+COPY . .
+
+# Use -u to see the output in real-time
 CMD ["python", "-u", "app.py"]
